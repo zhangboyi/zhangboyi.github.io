@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>测试 | Boyi Blog</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="shortcut icon" href="https://zhangboyi.github.io/favicon.ico?v=1603791013830">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://zhangboyi.github.io/styles/main.css">
+
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+  </head>
+  <body>
+  
+    <nav class="navbar border fixed split-nav">
+  <div class="nav-brand">
+    <h3><a href="https://zhangboyi.github.io">Boyi Blog</a></h3>
+  </div>
+  <div class="collapsible">
+    <input id="collapsible1" type="checkbox" name="collapsible1">
+    <button>
+      <label for="collapsible1">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+      </label>
+    </button>
+    <div class="collapsible-body">
+      <ul class="inline">
+        
+          <li>
+            
+              <a href="/" class="menu">
+                首页
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/archives" class="menu">
+                归档
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/tags" class="menu">
+                标签
+              </a>
+            
+          </li>
+        
+          <li>
+            
+              <a href="/post/about" class="menu">
+                关于
+              </a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div id="top" class="row site">
+      <div class="sm-12 md-8 col">
+        <div class="paper">
+          <article class="article">
+            <h1>测试</h1>
+            <p class="article-meta">
+              2020-10-27
+              
+                <a href="https://zhangboyi.github.io/tag/20DJzAK0t/" class="badge ">
+                  测试
+                </a>
+              
+                <a href="https://zhangboyi.github.io/tag/akwJaebkh/" class="badge secondary">
+                  Gridea
+                </a>
+              
+            </p>
+            
+            <div class="post-content">
+              <p>数据与时间对不上<img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201026153813021.png" alt="image-20201026153813021" loading="lazy"></p>
+<ul>
+<li>
+<p>展示的数据是否正确</p>
+<ul>
+<li>
+<p>每天获取的数据</p>
+<ul>
+<li>各个rule惩罚记录分布
+<ul>
+<li>惩罚总数量有误：每条规则的惩罚数时所有日期的总和？</li>
+<li>与penalty-live的数据不一致</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>rule_id</th>
+<th>sql</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>17</td>
+<td>select * from penalty_rule_tab where rule_id = 17;<br />select dt , count(1) from penalty_detail_data_tab where region in ('TH', 'MY', 'PH') &amp;&amp; counterfeit_num_7&gt;=2 &amp;&amp; counterfeit_num_7&lt;10 group by dt;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027141649450.png" alt="image-20201027141649450" style="zoom:50%;" /><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027141717732.png" alt="image-20201027141717732" loading="lazy"></td>
+</tr>
+<tr>
+<td>106312</td>
+<td>select * from penalty_rule_tab where rule_id = 106312;<br />select dt , count(1) from penalty_detail_data_tab where region in ('VN') &amp;&amp; lsr_7&gt;=100000 &amp;&amp; lsr_7_numerator&gt;=30 group by dt;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027141835132.png" alt="image-20201027141835132" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027141931616.png" alt="image-20201027141931616" loading="lazy"></td>
+</tr>
+<tr>
+<td>107048</td>
+<td>select dt , count(1) from penalty_detail_data_tab where ((cb_option = 1 &amp;&amp; official_shop = true) || (cb_option = 1 &amp;&amp; shopee_verified_flag = 1) || (cb_option = 1 &amp;&amp; (official_shop = false || official_shop is null) &amp;&amp; (shopee_verified_flag = 0 || shopee_verified_flag is null))) &amp;&amp; region in ('BR') &amp;&amp; lsr_7&gt;=150000 &amp;&amp; lsr_7_numerator&gt;=50 group by dt</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027144541817.png" alt="image-20201027144541817" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027144558066.png" alt="image-20201027144558066" loading="lazy"></td>
+</tr>
+<tr>
+<td>107047</td>
+<td>select dt , count(1) from penalty_detail_data_tab where                                                         ((cb_option = 1 and official_shop = true) || (cb_option = 1 and shopee_verified_flag = 1) || (cb_option = 1 and (official_shop = false || official_shop is null) and (shopee_verified_flag = 0 || shopee_verified_flag is null))) and region in ('BR') and lsr_7&gt;=150000 and lsr_7_numerator&gt;=20 group by dt;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027150108919.png" alt="image-20201027150108919" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027145038763.png" alt="image-20201027145038763" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>各个国家的惩罚分布</p>
+<ul>
+<li>每天的数据有少量的差异</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>sql</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>select region,execute_dt,count(*) from penalty_history_log_tab where rule_type = 0 group by region ,execute_dt order by execute_dt desc;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027154545287-20201027154640317.png" alt="image-20201027154545287" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027154648847.png" alt="image-20201027154648847" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>每天惩罚的shop/user数量</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>sql</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shop</td>
+<td>select execute_dt,count(distinct  shop_id) from penalty_history_log_tab where rule_type = 0 group by execute_dt order by execute_dt desc;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027155223534-20201027155232415.png" alt="image-20201027155223534" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027155204172-20201027155232533.png" alt="image-20201027155204172" loading="lazy"></td>
+</tr>
+<tr>
+<td>user</td>
+<td>select execute_dt,count(distinct  user_id) from penalty_history_log_tab where rule_type = 0 group by execute_dt order by execute_dt desc;</td>
+<td><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027155134144.png" alt="image-20201027155134144" loading="lazy"><br /><img src="https://gitee.com/zbyzgx/uPicWH/raw/master/uPic/image-20201027155102103.png" alt="image-20201027155102103" loading="lazy"></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>调度任务</p>
+<ul>
+<li>数据源的计算</li>
+<li>调度任务的配置</li>
+</ul>
+</li>
+<li>
+<p>数据展示优化</p>
+</li>
+<li>
+<p>思考</p>
+<ul>
+<li>当数据出现偏差、出现不一致的时候，也不能及时发现</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+          </article>
+        </div>
+        <div class="paper" data-aos="fade-in">
+          
+            <div class="next-post">
+              <div class="next">
+                下一篇
+              </div>
+              <a href="https://zhangboyi.github.io/post/linux/">
+                <h3 class="post-title">
+                  Linux
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+        
+      </div>
+
+      <div class="sm-12 md-4 col sidebar">
+  <div class="paper info-container">
+    <img src="https://zhangboyi.github.io/images/avatar.png?v=1603791013830" class="no-responsive avatar">
+    <div class="text-muted">温故而知新</div>
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      最新文章
+    </div>
+    <div class="row">
+      <ul>
+        
+          
+            <li>
+              <a href="https://zhangboyi.github.io/post/ce-shi/">测试</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://zhangboyi.github.io/post/linux/">Linux</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://zhangboyi.github.io/post/about/">关于</a>
+            </li>
+          
+        
+          
+            <li>
+              <a href="https://zhangboyi.github.io/post/hello-gridea/">Hello Gridea</a>
+            </li>
+          
+        
+      </ul>
+    </div>
+  </div>
+  <div class="paper">
+    <div class="sidebar-title">
+      标签列表
+    </div>
+    <div class="row">
+      
+        <a href="https://zhangboyi.github.io/tag/20DJzAK0t/" class="badge secondary">
+          测试
+        </a>
+      
+        <a href="https://zhangboyi.github.io/tag/akwJaebkh/" class="badge warning">
+          Gridea
+        </a>
+      
+        <a href="https://zhangboyi.github.io/tag/_R62vfVKX/" class="badge secondary">
+          Linux
+        </a>
+      
+    </div>
+  </div>
+  <div class="paper">
+    Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://zhangboyi.github.io/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+</script>
+
+
+
+
+  </body>
+</html>
