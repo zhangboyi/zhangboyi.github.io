@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://zhangboyi.github.io</id>
+    <title>波小艺</title>
+    <updated>2023-05-06T01:59:48.496Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://zhangboyi.github.io"/>
+    <link rel="self" href="https://zhangboyi.github.io/atom.xml"/>
+    <logo>https://zhangboyi.github.io/images/avatar.png</logo>
+    <icon>https://zhangboyi.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, 波小艺</rights>
+    <entry>
+        <title type="html"><![CDATA[如何利用Requestly提升前端开发与测试的效率，让你事半功倍?]]></title>
+        <id>https://zhangboyi.github.io/requestly/</id>
+        <link href="https://zhangboyi.github.io/requestly/">
+        </link>
+        <updated>2023-05-03T14:28:31.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="痛点">痛点</h2>
+<p><a name="RR2vV"></a></p>
+<h3 id="前端测试">前端测试</h3>
+<p>在进行前端页面开发或者测试的时候，我们会遇到这一类场景：</p>
+<ol>
+<li>在开发阶段，前端想通过调用真实的接口返回响应</li>
+<li>在开发或者生产阶段需要验证前端页面的一些 异常场景 或者 临界值 时</li>
+<li>在测试阶段，想直接通过修改接口响应来验证前端页面是否正常</li>
+<li>想验证后端服务响应比较慢的情况下，验证前端页面是否正常（模拟接口超时或者模拟接口响应的时间的场景）</li>
+<li>想更新请求头，请求体或者请求参数达到测试的目的</li>
+</ol>
+<p><a name="q1AU6"></a></p>
+<h3 id="后端测试">后端测试</h3>
+<p>在后端开发或者测试的过程中，我们可能会遇到这些场景：</p>
+<ol>
+<li>依赖方接口不稳定或者造数困难</li>
+</ol>
+<p><a name="oNvk9"></a></p>
+<h2 id="曾使用的应对措施">曾使用的应对措施</h2>
+<p>根据以上的痛点，我也做过一些探索。<br>
+<a name="oWc86"></a></p>
+<h3 id="charles">Charles</h3>
+<p>在验证前端页面的时候，我曾使用抓包软件Charles在捕捉流量的时候，设置断点（类似debug功能），并手动去调整接口的请求体或者响应体。<br /><strong>工作原理：</strong><br />Charles 断点的实现原理是在客户端和服务器之间插入一个代理服务器，拦截并监视网络流量。当我们设置断点时，Charles 会在代理服务器上暂停请求或响应，直到我们决定继续或取消请求或响应。</p>
+<ul>
+<li>具体来说，Charles 会在代理服务器上拦截请求或响应，并根据用户设置的规则进行处理。当 Charles 检测到一个请求或响应匹配了一个断点规则时，它会暂停请求或响应，并在 Charles 的 UI 中弹出一个对话框，让用户选择是否继续执行请求或响应。</li>
+<li>在实现过程中，Charles 使用了代理服务器、Socket 和线程等技术。当我们启动 Charles 时，它会在本地计算机上开启一个代理服务器，并将其配置为系统默认的代理服务器。然后，当我们发送一个请求时，Charles 会将该请求发送到代理服务器上，并在代理服务器上等待响应。当代理服务器收到响应后，Charles 会在 UI 中显示响应，并等待用户决定是否继续执行请求或响应。</li>
+<li>需要注意的是，由于 Charles 会拦截网络流量并在代理服务器上处理请求和响应，因此它可能会对网络速度和性能造成一定的影响。此外，在设置断点时，我们应该仔细考虑断点规则的范围和条件，避免无意中影响其他请求和响应。<br>
+<a name="swMew"></a></li>
+</ul>
+<h3 id="chrome-插件">Chrome 插件</h3>
+<p>通过使用Chrome插件（一般使用Chrome浏览器：如<a href="https://github.com/g0ngjie/ajax-proxy">g0ngjie/ajax-proxy</a>）,设定一些规则来拦截接口，更改接口的响应。或者对请求进行重定向。但此方法仅局限在Chrome浏览器中使用。<br /><strong>工作原理：</strong><br />这个工具是一个基于 Node.js 和 Express 框架的 AJAX 代理服务器，可以将 AJAX 请求发送到其他域名下的 API 接口，并将响应返回给客户端。其实现原理如下：</p>
+<ol>
+<li>客户端向 AJAX 代理服务器发送 AJAX 请求，请求包含目标 API 的 URL 以及其他参数。</li>
+<li>代理服务器接收到请求后，解析出目标 API 的 URL 和参数，并将其转发到目标 API 的服务器。</li>
+<li>目标 API 服务器接收到请求后，处理请求并返回响应。</li>
+<li>代理服务器接收到响应后，将响应转发给客户端。</li>
+</ol>
+<p>在这个过程中，代理服务器可以对请求和响应进行一些处理，例如修改请求头、添加身份认证信息、对响应结果进行过滤等。这些处理可以在服务器端通过编写中间件来实现。</p>
+<p><a name="eZRyK"></a></p>
+<h3 id="实现mock工具">实现mock工具</h3>
+<p>实现一款mock工具，设计方案大致如下：</p>
+<ul>
+<li>对于后端而言
+<ul>
+<li>代码层面的域名改为mock服务器，不能指定请求，会将所有的请求都转发到mock server(若没有匹配的规则，mock server无法进行处理)。</li>
+<li>代码层面的域名不变，在服务器中配置代理，将请求转发至mock server，在mock server设置拦截规则，未匹配规则的请求返回自定义的静态响应或者动态响应。未命中规则的请求，将转发至真实的服务器。</li>
+</ul>
+</li>
+<li>对于前端而言
+<ul>
+<li>在网关层面，将指定的请求转发至mock server，但这个无法通过mock server平台控制。</li>
+<li>本地代理：本地启动代理，将请求转发到mock server，在mock server设置拦截规则，未匹配规则的请求返回自定义的静态响应或者动态响应。未命中规则的请求，将转发至真实的服务器。</li>
+</ul>
+</li>
+</ul>
+<p><a name="gCEeA"></a></p>
+<h3 id="requestly">Requestly</h3>
+<p>其实Requestly的工作原理和ajax-proxy 浏览器插件的原理差不多。<br />Requestly 是一个请求修改工具，可以帮助用户在浏览器中修改网络请求，从而达到一些调试、测试、模拟等目的。其工作原理如下：</p>
+<ol>
+<li>用户在 Requestly 中创建规则，规则包含了要修改的请求 URL、请求头、请求参数等信息，以及要执行的操作，如重定向、修改响应等。</li>
+<li>当用户访问网站时，Requestly 会拦截浏览器发出的请求，并根据规则对请求进行修改。修改后的请求会被发送到服务器。</li>
+<li>服务器处理修改后的请求，并将响应返回给浏览器。</li>
+<li>Requestly 接收到响应后，根据规则对响应进行修改，然后将修改后的响应返回给浏览器。</li>
+</ol>
+<p>在这个过程中，Requestly 可以对请求和响应进行多种类型的修改，包括重定向、添加请求头、修改请求参数、模拟网络请求等。这些修改可以帮助用户快速定位和解决问题，加速开发和测试过程。<br />除了使用浏览器插件的方式抓紧请求外，还可以通过启动本地代理的方式来拦截任何请求。</p>
+<p>这款工具大大提升了我的工作效率，在前端页面的开发以及测试来说，就是一款网络调试神器！</p>
+<p><a name="oaVnl"></a></p>
+<h2 id="requestly的功能">Requestly的功能</h2>
+<p>requestly主要有以下的功能：</p>
+<ul>
+<li>网络请求与响应的拦截</li>
+<li>网络请求与响应的修改</li>
+</ul>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a382cbced1724a0280f306f2f55723cc~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></figure>
+<ul>
+<li>api Mock and file mock</li>
+<li>Android Debugger<br>
+<a name="RuSng"></a></li>
+</ul>
+<h3 id="流量捕捉方式">流量捕捉方式</h3>
+<p>1.浏览器插件<br />2.本地代理：通过启动本地代理来捕获各个端的流量（与Charles类似）</p>
+<ul>
+<li>捕捉浏览器的网络请求</li>
+<li>捕捉app的网络请求</li>
+<li>捕捉模拟器的网路请求</li>
+<li>捕捉终端的网络请求</li>
+<li>捕捉其他地方的网络请求<br>
+<a name="jcc2G"></a></li>
+</ul>
+<h3 id="请求的修改">请求的修改</h3>
+<p><a name="iYDOt"></a></p>
+<h4 id="cancel-request">Cancel Request</h4>
+<p>可以选择要取消的特定网络请求，以便在进行调试和测试时排除干扰。<br /><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d7d48cdc0ed49929c43ae7415830de7~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"><br>
+<a name="Z2XLW"></a></p>
+<h4 id="redirect-request">Redirect Request</h4>
+<p>将特定的网络请求重定向到其他url。</p>
+<ul>
+<li>重定向到mock。可以在mock server进行配置。</li>
+<li>重定向到其他url。如下规则：访问www.baidu.com时，会被重定向到www.qq.com</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/957bb2535c10477f8c5563847bca8082~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></figure>
+<p><a name="GQsOo"></a></p>
+<h4 id="delay-network-requests">Delay network requests</h4>
+<p>模拟接口延时。通过使用URL匹配或者host匹配或者path匹配来设置规则（支持正则匹配），命中规则的接口将会被requestly捕捉，并在延迟的时间后返回响应<br /><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c498d2902c2843819a6cbc1741139fb0~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"><br>
+<a name="iLVRc"></a></p>
+<h4 id="modify-request-urlreplace-string">Modify Request Url(Replace string)</h4>
+<ul>
+<li>更新请求路径： 比如说，我们将v1接口升级到v2，想在上线前对v2接口做下验证。我们可以选择使用流量回放功能进行验证，也可以使用该功能进行验证。将v1请求的接口更新为v2接口，并做相关的验证。</li>
+</ul>
+<figure data-type="image" tabindex="3"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c1f83bcd57524c5d8e0f3109a7ad5aec~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></figure>
+<p><a name="Yv3Ok"></a></p>
+<h4 id="query-params">Query Params</h4>
+<p>修改或者删除请求的查询参数<br /><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7060ed60197049c6a146ecda4c45b904~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></p>
+<p><a name="lSFwm"></a></p>
+<h4 id="modify-headers">Modify Headers</h4>
+<ul>
+<li>支持添加自定义的请求头</li>
+<li>修改或者删除原有的请求头</li>
+<li>支持添加自定义的响应头</li>
+<li>支持修改或者删除原有的响应头</li>
+</ul>
+<figure data-type="image" tabindex="4"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e73436c6c24f433186fb0298fea3f1bc~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></figure>
+<p><a name="bmlCL"></a></p>
+<h4 id="modify-user-agent">Modify User Agent</h4>
+<ul>
+<li>更改请求头的用户代理</li>
+</ul>
+<p>用户代理在网络通信中起着非常重要的作用，它能够告诉服务器请求的来源和请求的方式。这些信息可以帮助服务器更好地处理请求，提供更好的服务和用户体验。<br />我们使用chrome浏览器验证功能的时候，可以匹配的域名的用户代理改成对应的代理。<br /><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a41669a46c1a414aa085c8cf3a2d907d~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></p>
+<p><a name="zTIxq"></a></p>
+<h4 id=""></h4>
+<p><a name="RPvMq"></a></p>
+<h4 id="modify-api-request">Modify Api Request</h4>
+<ul>
+<li>static data（静态数据）</li>
+</ul>
+<p>提供json格式的数据，并直接替换请求的请求体</p>
+<ul>
+<li>Dynamic (JavaScript)</li>
+</ul>
+<p>通过JS修改请求中的请求体，并替换原有的请求体。使用频率最高的功能是：通过对bodyJson进行调整，并重新返回bodyAsJson，达到修改请求体的目的。</p>
+<pre><code class="language-javascript">function modifyRequestBody(args) {
+  const { method, url, body, bodyAsJson } = args;
+  // Change request body below depending upon request attributes received in args
+  //可以对bodyJson进行调整，并重新返回bodyAsJson
+  
+  return body;
+}
+</code></pre>
+<p><a name="iptps"></a></p>
+<h4 id="-2"></h4>
+<p><a name="PXESg"></a></p>
+<h3 id="响应的修改">响应的修改</h3>
+<p><a name="WfANX"></a></p>
+<h4 id="modify-headers-2">Modify Headers</h4>
+<ul>
+<li>支持添加自定义的请求头</li>
+<li>修改或者删除原有的请求头</li>
+<li>支持添加自定义的响应头</li>
+<li>支持修改或者删除原有的响应头</li>
+</ul>
+<p><a name="eOHfc"></a></p>
+<h4 id="modify-api-response">Modify Api Response</h4>
+<p>支持api类型：REST API与GraphQL API</p>
+<ul>
+<li>static data（静态数据）</li>
+</ul>
+<p>提供json格式的数据，并直接将该数据返回给前端</p>
+<ul>
+<li>Dynamic (JavaScript)</li>
+</ul>
+<p>修改真实服务器返回的响应并返回给前端</p>
+<pre><code class="language-javascript">function modifyResponse(args) {
+  const {method, url, response, responseType, requestHeaders, requestData, responseJSON} = args;
+  // Change response below depending upon request attributes received in args
+  const mock_res = JSON.parse(response)
+  console.log('mock_res itemList:',mock_res.data.itemList)
+  itemList = mock_res.data.itemList
+  if (itemList!==undefined &amp;&amp; itemList.length !== 0){
+    for(var i=0; i&lt;itemList.length;i++){
+      itemList[i].productName = itemList[i].itemId
+      itemList[i].status = 1
+      itemList[i].statusName = Math.random() &lt; 0.5 ? &quot;DELETE&quot; : &quot;BANNED&quot;;
+
+      itemList[i].timeFormatted = new Date().toLocaleString().replaceAll('/','-');
+      itemList[i].time = Date.now().toString();
+
+    }
+  }
+  // mock_res.data.itemList = itemList
+  return mock_res;
+}
+</code></pre>
+<hr>
+<p><a name="Zo3CW"></a></p>
+<h3 id="请求响应录制">请求响应录制</h3>
+<p>Requestly Sessions 是一种可用于捕获和共享网络请求的功能。这个功能可以记录和存储浏览器请求以及对应的响应，并在需要时重新发送这些请求。这意味着我们可以跨不同浏览器会话和不同设备之间以及与其他用户共享这些请求。这个功能特别适用于需要经常复制和粘贴相同请求的开发人员、测试人员和网络爬虫等。</p>
+<ul>
+<li>比如说，我们在开发联调或者测试的过程中，发现某些问题，可以通过录制请求并共享给其他开发人员，方便他们排查问题。</li>
+</ul>
+<figure data-type="image" tabindex="5"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c2a1a000872241e0be3fd978cc856ff3~tplv-k3u1fbpfcp-zoom-1.image" alt="image.png" loading="lazy"></figure>
+<p><a name="JUHRG"></a></p>
+<h2 id="我对requestly的应用">我对Requestly的应用</h2>
+<p>1.验证前端在各种状态的展示：通过修改接口的返回响应来模拟各个场景。（当时，你也可以通过在db层面造数来实现接口响应的正确放回：如直接改db或者写造数脚本，这个不在我们今天讨论的范围内。）<br />我们可以使用<code>Dynamic (JavaScript)</code>来调整响应。可以针对不同的场景自定义不同的json字符串，也可以在原有的响应的基础来进行调整。</p>
+<ul>
+<li>如果该场景的验证只涉及单个接口，我们可以套用一下代码模板：我们定义一个status变量，在验证某个场景的时候，就将status设置为某个场景的值，然后在if..else中设置对应的响应。</li>
+</ul>
+<pre><code class="language-javascript">function modifyResponse(args) {
+  const {method, url, response, responseType, requestHeaders, requestData, responseJSON} = args;
+  // Change response below depending upon request attributes received in args
+  var status=0
+  if(status === 0 ){
+    console.log(&quot;json更新为status=0场景&quot;)
+  }else if(status ===1 ){
+    console.log(&quot;json更新为status=1场景&quot;)
+  }
+  return response;
+}
+</code></pre>
+<ul>
+<li>如果该场景的验证涉及多个接口，我们可以结合Modify Header Request 与 Dynamic (JavaScript)进行调整。思路如下：为相关接口的请求头新增一个自定义的请求头参数，如statusHeader。然后在处理接口响应的时候，先读取statusHeader的值，再根据statusHeader的值返回相关的响应</li>
+</ul>
+<p>2.模拟接口延迟，验证前端页面的处理</p>
+<p>3.捕捉各个端的网络请求</p>
+<ul>
+<li>捕捉浏览器的网络请求</li>
+<li>捕捉模拟器的网路请求</li>
+<li>捕捉终端的网络请求</li>
+</ul>
+<p><a name="km6px"></a></p>
+<h2 id="总结">总结</h2>
+<p>总结一下Requestlty常用的功能：</p>
+<ol>
+<li>修改网络请求：Requestly 可以帮助您修改 HTTP 请求和响应。例如，您可以使用 Requestly 修改请求参数、请求头、请求体或响应头、响应体，以便更好地测试和调试应用程序。</li>
+<li>模拟网络请求：Requestly 可以帮助您模拟网络请求。例如，您可以使用 Requestly 模拟 AJAX 请求、模拟响应超时或模拟 HTTP 状态码，以便测试应用程序的稳定性和性能。</li>
+<li>代理服务器：Requestly 可以帮助您配置代理服务器，以便更好地控制网络请求。例如，您可以使用 Requestly 配置代理服务器以拦截和修改网络请求，以便更好地测试和调试应用程序。</li>
+</ol>
+<p>总之，Requestly 是一款非常强大和有用的调试和测试工具，可以帮助开发人员和测试人员更好地测试和调试应用程序。它具有丰富的功能和灵活的配置选项，可以满足不同的测试需求。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[mytools]]></title>
+        <id>https://zhangboyi.github.io/mytools/</id>
+        <link href="https://zhangboyi.github.io/mytools/">
+        </link>
+        <updated>2023-05-03T12:27:24.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>记录常用的工具</p>
+</blockquote>
+<ul>
+<li><a href="https://zhangboyi.github.io/CoverView-CN/">封面生成工具</a></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[docker+wordpress]]></title>
+        <id>https://zhangboyi.github.io/dockerwordpress/</id>
+        <link href="https://zhangboyi.github.io/dockerwordpress/">
+        </link>
+        <updated>2020-10-27T13:01:51.000Z</updated>
+        <content type="html"><![CDATA[<pre><code class="language-shell">docker pull wordpress:latest
+docker pull mysql:latest
+</code></pre>
+<p>配置mysql：https://hub.docker.com/_/mysql</p>
+<p>启动mysql：docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag<br>
+name参数指定要启动的实例名称，MYSQL_ROOT_PASSWORD指定ROOT密码。tag参数是MySQL的版本号，可以是5.7、5.6、8.0。<br>
+docker run --name some-wordpress --link some-mysql:mysql -p 8080:80 -d wordpress</p>
+<h1 id="docker-中下载-mysql">docker 中下载 mysql</h1>
+<p>docker pull mysql</p>
+<p>#启动<br>
+docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Lzslov123! -d mysql</p>
+<p>#进入容器<br>
+docker exec -it mysql bash</p>
+<p>#登录mysql<br>
+mysql -u root -p<br>
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Lzslov123!';</p>
+<p>#添加远程登录用户<br>
+CREATE USER 'liaozesong'@'%' IDENTIFIED WITH mysql_native_password BY 'Lzslov123!';<br>
+GRANT ALL PRIVILEGES ON <em>.</em> TO 'liaozesong'@'%';</p>
+<p>boyi.zhang<br>
+kla8Mp4yGHQ7G)MOyi</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Linux]]></title>
+        <id>https://zhangboyi.github.io/linux/</id>
+        <link href="https://zhangboyi.github.io/linux/">
+        </link>
+        <updated>2020-10-27T09:11:56.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="基本权限管理">基本权限管理</h2>
+<h3 id="所有者和所属组命令">所有者和所属组命令</h3>
+<ul>
+<li>
+<h4 id="chown">chown</h4>
+<p>用法：chown 【选项】 用户【：用户组】 file</p>
+<pre><code class="language-zby">将test.java 文件所属的用户设置成 yangyuanliang
+chown zhangboyi test.php
+     
+
+将test.java 文件的所属用户设置成yangyuanliang，所属用户组设置成staff   
+chown zhangboyi:staff test.php
+
+ 
+将test 及其内部文件所属用户设置成yangyuanliang，所属用户组设置成staff
+chown -R zhangboyi:staff  test/
+</code></pre>
+</li>
+<li>
+<p>chgrp</p>
+</li>
+</ul>
+<h2 id="linux-crontab-定时任务">Linux Crontab 定时任务</h2>
+<blockquote>
+<p>Linux crontab用来定期执行程序的命令</p>
+</blockquote>
+<p>参考资料：</p>
+<ul>
+<li>
+<p>cron（6、7位）https://baike.baidu.com/item/cron/10952601?fr=aladdin、https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm</p>
+</li>
+<li>
+<p>https://www.runoob.com/w3cnote/linux-crontab-tasks.html</p>
+</li>
+<li>
+<p>https://www.cnblogs.com/intval/p/5763929.html</p>
+</li>
+</ul>
+<h3 id="linux任务调度">linux任务调度</h3>
+<ul>
+<li>
+<p>系统任务调度</p>
+<p>系统周期性所要执行的工作，如备份系统数据、清理缓存</p>
+<pre><code class="language-sh"># /etc/crontab 文件--&gt;系统任务调度的配置文件
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=
+HOME=/
+# 前四行是用来配置crond任务运行的环境变量
+# 第一行SHELL变量指定了系统要使用哪个shell，这里是bash
+# 第二行PATH变量指定了系统执行 命令的路径
+# 第三行MAILTO变量指定了crond的任务执行信息将通过电子邮件发送给root用户，如果MAILTO变量的值为空，则表示不发送任务 执行信息给用户
+# 第四行的HOME变量指定了在执行命令或者脚本时使用的主目录。
+# run-parts
+51 * * * * root run-parts /etc/cron.hourly
+24 7 * * * root run-parts /etc/cron.daily
+22 4 * * 0 root run-parts /etc/cron.weekly
+42 4 1 * * root run-parts /etc/cron.monthly
+</code></pre>
+</li>
+<li>
+<p>用户任务调度</p>
+<p>某个用户定期要做的工作，例如每隔10分钟检查邮件服务器是否有新信，这些工作可由每个用户自行设置。所有用户定义的crontab 文件都被保存在 /var/spool/cron目录。</p>
+<ul>
+<li>使用者权限文件：
+<ul>
+<li>/etc/cron.deny：该文件中所列用户不允许使用crontab命令</li>
+<li>/etc/cron.allow：该文件中所列用户允许使用crontab命令</li>
+<li>/var/spool/cron/：所有用户crontab文件存放的目录,以用户名命名</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="语法">语法</h3>
+<p><code>crontab [-u user] file</code> 或者 <code>crontab [ -u user] {-l |-r |-e}</code></p>
+<h4 id="说明"><strong>说明:</strong></h4>
+<ul>
+<li>
+<p>crontab 是用来让使用者在固定时间或固定间隔执行程序之用</p>
+</li>
+<li>
+<p>-u user 指定某用户的时程表，前提是由操作的权限。不使用<code>-u user</code>则设定自己的时程表</p>
+</li>
+<li>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li>-e：执行文字编辑器来设定时程表，内定的文字编辑器是 VI，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe)</li>
+<li>-r：delete当前的时程表</li>
+<li>-l：list当前的时程表</li>
+</ul>
+</li>
+<li>
+<p><strong>时间格式：</strong></p>
+<pre><code class="language-zby">f1 f2 f3 f4 f5 program
+</code></pre>
+<ul>
+<li>
+<p>其中 f1 是表示分钟，f2 表示小时，f3 表示一个月份中的第几日，f4 表示月份，f5 表示一个星期中的第几天。program 表示要执行的程序。</p>
+</li>
+<li>
+<p>当 f1 为 * 时表示每分钟都要执行 program，f2 为 * 时表示每小时都要执行程序，以此类推。</p>
+</li>
+<li>
+<p>f1为a-b时，则表示从第a分钟到第b分钟要执行；f2为a-b时，则表示从第a小时到第b小时要执行程序，以此类推。</p>
+</li>
+<li>
+<p>当 f1 为 */n 时，表示每 n 分钟执行一次；f2 为 */n 时，表示每 n 小时执行一次。以此类推</p>
+</li>
+<li>
+<p>当 f1 为 a, b, c,... 时，表示第 a, b, c,... 分钟要执行；f2 为 a, b, c,... 时，表示第 a, b, c...个小时要执行。以此类推</p>
+</li>
+<li>
+<pre><code class="language-zby">*    *    *    *    *    program
+-    -    -    -    -
+|    |    |    |    |
+|    |    |    |    +----- 星期中星期几(0-6)(星期天为0)
+|    |    |    +---------- 月份 (1 - 12) 
+|    |    +--------------- 一个月中的第几天 (1 - 31)
+|    +-------------------- 小时 (0 - 23)
++------------------------- 分钟 (0 - 59)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>可以将所有的设置存放于文件中，通过<code>crontab file</code>的方式来使用。</p>
+</li>
+</ul>
+<h3 id="日志">日志</h3>
+<blockquote>
+<p>在执行额程序后面加入  <strong>&gt; /dev/null 2&gt;&amp;1</strong></p>
+</blockquote>
+<h2 id="添加用户和用户组">添加用户和用户组</h2>
+<p>参考链接：https://www.cnblogs.com/guanbin-529/p/11227069.html</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello Gridea]]></title>
+        <id>https://zhangboyi.github.io/hello-gridea/</id>
+        <link href="https://zhangboyi.github.io/hello-gridea/">
+        </link>
+        <updated>2018-12-11T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+<!-- more -->
+<p><a href="https://github.com/getgridea/gridea">Github</a><br>
+<a href="https://gridea.dev/">Gridea 主页</a><br>
+<a href="http://fehey.com/">示例网站</a></p>
+<h2 id="特性">特性👇</h2>
+<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
+<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
+<p>🏷️  你可以对文章进行标签分组</p>
+<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
+<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
+<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
+<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
+<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
+<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
+<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
+<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
+<p>未来，它一定会成为你离不开的伙伴</p>
+<p>尽情发挥你的才华吧！</p>
+<p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+</feed>
